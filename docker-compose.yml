@@ -8,6 +8,8 @@ services:
       - redis
       - postgres
       - elasticsearch
+    env_file:
+      - ./data/global_config/global_config.env
     volumes:
     - ./data/global_config/global_config.env:/app/global_config.env
     restart: always
