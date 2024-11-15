@@ -1,0 +1,93 @@
+version: "3.7"
+services:
+  redis:
+    image: redis
+    ports:
+      - 16379:6379
+    volumes:
+      - ./data/redis/data:/data
+    restart: always
+    networks:
+      - fastapi_demo
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+    env_file:
+      - ./data/global_config/global_config.env
+    restart: always
+    networks:
+      - fastapi_demo
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    volumes:
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    env_file:
+      - ./data/global_config/global_config.env
+    ports:
+      - 19200:9200
+      - 19300:9300
+    restart: always
+    networks:
+      - fastapi_demo
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    depends_on:
+      - elasticsearch
+    env_file:
+      - ./data/global_config/global_config.env
+    ports:
+      - 15601:5601
+    restart: always
+    networks:
+      - fastapi_demo
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 12181:2181
+    volumes:
+      - ./data/zookeeper/data:/var/lib/zookeeper/data
+      - ./data/zookeeper/log:/var/lib/zookeeper/log
+    deploy:
+      replicas: 1
+    networks:
+      - fastapi_demo
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    ports:
+      - 19092:19092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 60000
+      KAFKA_CREATE_TOPICS: "behavior-logs:1:1"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://127.0.0.1:19092
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:19092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - ./data/kafka:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    networks:
+      - fastapi_demo
+
+networks:
+  fastapi_demo:
+    external: true
+    name: ${NETWORK}

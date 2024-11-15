@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  fastapi_demo:
+    image: snail97/fastapi_demo:latest
+    ports:
+      - 18000:8000
+    depends_on:
+      - redis
+      - postgres
+      - elasticsearch
+    volumes:
+    - ./data/global_config/global_config.env:/fastapi_demo/global_config.env
+    restart: always
+    networks:
+      - fastapi_demo
+
+  front_html:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+        - ./data/front_html/conf.d:/etc/nginx/conf.d
+        - ./data/front_html/nginx.conf:/etc/nginx/nginx.conf
+        - ./data/front_html/log:/var/log/nginx
+        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
+        - ./data/front_html/private.key:/etc/nginx/private.key
+    restart: always
+    networks:
+      - fastapi_demo
+
+networks:
+  fastapi_demo:
+    external: true
+    name: ${NETWORK}
