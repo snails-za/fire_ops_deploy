@@ -9,7 +9,7 @@ services:
       - postgres
       - elasticsearch
     volumes:
-    - ./data/global_config/global_config.env:/fastapi_demo/global_config.env
+    - ./data/global_config/global_config.env:/app/global_config.env
     restart: always
     networks:
       - fastapi_demo
