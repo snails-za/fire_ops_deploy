@@ -17,7 +17,7 @@ services:
       - fastapi_demo
 
   front_html:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:latest
+    image: nginx:1.27.4
     ports:
       - 80:80
       - 443:443
