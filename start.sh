@@ -24,9 +24,15 @@ start_stack(){
   elif [ $STACK_NAME == 'database' ]
   then
     docker stack deploy --with-registry-auth --prune -c database.yml $STACK_NAME
+  elif [ $STACK_NAME == 'database_arm' ]
+  then
+    docker stack deploy --with-registry-auth --prune -c database-arm.yml $STACK_NAME
   elif [ $STACK_NAME == 'fastapi_demo' ]
   then
     docker stack deploy --with-registry-auth --prune -c docker-compose.yml $STACK_NAME
+  elif [ $STACK_NAME == 'fastapi_demo_arm' ]
+  then
+    docker stack deploy --with-registry-auth --prune -c docker-compose-arm.yml $STACK_NAME
   fi
   sleep 3
   get_stack_status ${STACK_NAME}

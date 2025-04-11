@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   redis:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2-linuxarm64
+    image: redis:7.4.2-linuxarm64
     ports:
       - 16379:6379
     volumes:
@@ -11,7 +11,7 @@ services:
       - fastapi_demo
 
   postgres:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/postgres:17-linuxarm64
+    image: postgres:17-linuxarm64
     volumes:
       - ./data/postgres/data:/var/lib/postgresql/data
     ports:
@@ -23,7 +23,7 @@ services:
       - fastapi_demo
 
   elasticsearch:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3-linuxarm64
+    image: elasticsearch:8.17.3-linuxarm64
     volumes:
       - ./data/elasticsearch/data:/usr/share/elasticsearch/data
       - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
@@ -37,7 +37,7 @@ services:
       - fastapi_demo
 
   kibana:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3-linuxarm64
+    image: kibana:8.17.3-linuxarm64
     depends_on:
       - elasticsearch
     env_file:
@@ -49,7 +49,7 @@ services:
       - fastapi_demo
 
   zookeeper:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/confluentinc/cp-zookeeper:7.4.0
+    image: confluentinc/cp-zookeeper:7.4.0-linuxarm64
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -64,7 +64,7 @@ services:
       - fastapi_demo
 
   kafka:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/confluentinc/cp-kafka:7.4.0
+    image: confluentinc/cp-kafka:7.4.0-linuxarm64
     ports:
       - 19092:19092
     environment:
