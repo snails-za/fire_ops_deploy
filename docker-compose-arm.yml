@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   fire_ops:
-    image: snail97/fire_ops:latest
+    image: snail97/fire_ops_arm:latest
     ports:
       - 18000:8000
     depends_on:
