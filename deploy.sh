@@ -1,7 +1,7 @@
 source ./start.sh
 
-network='fastapi_demo-network'
-export NETWORK='fastapi_demo-network'
+network='fire_ops-network'
+export NETWORK='fire_ops-network'
 
 mkdir -p data/elasticsearch/data
 mkdir -p data/redis/data
@@ -64,7 +64,7 @@ exec_by_params() {
         checkNetwork
         start portainer
         start database
-        start fastapi_demo
+        start fire_ops
       fi
       ;;
   esac

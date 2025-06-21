@@ -27,10 +27,10 @@ start_stack(){
   elif [ $STACK_NAME == 'database_arm' ]
   then
     docker stack deploy --with-registry-auth --prune -c database-arm.yml $STACK_NAME
-  elif [ $STACK_NAME == 'fastapi_demo' ]
+  elif [ $STACK_NAME == 'fire_ops' ]
   then
     docker stack deploy --with-registry-auth --prune -c docker-compose.yml $STACK_NAME
-  elif [ $STACK_NAME == 'fastapi_demo_arm' ]
+  elif [ $STACK_NAME == 'fire_ops_arm' ]
   then
     docker stack deploy --with-registry-auth --prune -c docker-compose-arm.yml $STACK_NAME
   fi

@@ -19,5 +19,5 @@ done
 
 echo "saving images"
 mkdir -p images
-save_tar_path="images/fastapi_demo_all_image_arm.tar"
+save_tar_path="images/fire_ops_all_image_arm.tar"
 docker save -o ${save_tar_path} ${IMAGES} && gzip ${save_tar_path}

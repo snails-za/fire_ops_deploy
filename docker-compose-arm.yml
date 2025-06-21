@@ -1,7 +1,7 @@
 version: "3.7"
 services:
-  fastapi_demo:
-    image: snail97/fastapi_demo_arm:latest
+  fire_ops:
+    image: snail97/fire_ops_deploy:latest
     ports:
       - 18000:8000
     depends_on:
@@ -14,7 +14,7 @@ services:
     - ./data/global_config/global_config.env:/app/global_config.env
     restart: always
     networks:
-      - fastapi_demo
+      - fire_ops
 
   front_html:
     image: nginx:1.27.4-linuxarm64
@@ -29,9 +29,9 @@ services:
         - ./data/front_html/private.key:/etc/nginx/private.key
     restart: always
     networks:
-      - fastapi_demo
+      - fire_ops
 
 networks:
-  fastapi_demo:
+  fire_ops:
     external: true
     name: ${NETWORK}

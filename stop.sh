@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker stack rm database fastapi_demo portainer
+docker stack rm database fire_ops portainer
