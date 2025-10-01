@@ -33,6 +33,7 @@ services:
       - 16379:6379
     volumes:
       - ./data/redis/data:/data
+    user: "501:501"  # Elasticsearch 容器中的默认用户 UID 是 1000
     restart: always
 
   postgres:
@@ -43,7 +44,7 @@ services:
       - "15432:5432"
     env_file:
       - ./data/global_config/global_config.env
-    user: "999:999"  # PostgreSQL 容器中的默认用户 UID 是 999
+    user: "501:501"  # PostgreSQL 容器中的默认用户 UID 是 999
     restart: always
 
   elasticsearch:
@@ -56,7 +57,7 @@ services:
     ports:
       - 19200:9200
       - 19300:9300
-    user: "1000:1000"  # Elasticsearch 容器中的默认用户 UID 是 1000
+    user: "501:501"  # Elasticsearch 容器中的默认用户 UID 是 1000
     restart: always
 
   kibana:
@@ -67,6 +68,7 @@ services:
       - ./data/global_config/global_config.env
     ports:
       - 15601:5601
+    user: "501:501"  # Elasticsearch 容器中的默认用户 UID 是 1000
     restart: always
 
 
