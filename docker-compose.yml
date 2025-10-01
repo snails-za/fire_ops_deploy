@@ -1,37 +1,71 @@
 version: "3.7"
 services:
-  fire_ops:
-    image: snail97/fire_ops:latest
+#  fire_ops:
+#    image: snail97/fire_ops:latest
+#    ports:
+#      - 18000:8000
+#    depends_on:
+#      - redis
+#      - postgres
+#      - elasticsearch
+#    env_file:
+#      - ./data/global_config/global_config.env
+#    volumes:
+#    - ./data/global_config/global_config.env:/app/global_config.env
+#    restart: always
+
+#  front_html:
+#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.27.4
+#    ports:
+#      - 80:80
+#      - 443:443
+#    volumes:
+#        - ./data/front_html/conf.d:/etc/nginx/conf.d
+#        - ./data/front_html/nginx.conf:/etc/nginx/nginx.conf
+#        - ./data/front_html/log:/var/log/nginx
+#        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
+#        - ./data/front_html/private.key:/etc/nginx/private.key
+#    restart: always
+
+  redis:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2
     ports:
-      - 18000:8000
+      - 16379:6379
+    volumes:
+      - ./data/redis/data:/data
+    restart: always
+
+  postgres:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/postgres:17
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+    env_file:
+      - ./data/global_config/global_config.env
+    user: "999:999"  # PostgreSQL 容器中的默认用户 UID 是 999
+    restart: always
+
+  elasticsearch:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3
+    volumes:
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+    env_file:
+      - ./data/global_config/global_config.env
+    ports:
+      - 19200:9200
+      - 19300:9300
+    user: "1000:1000"  # Elasticsearch 容器中的默认用户 UID 是 1000
+    restart: always
+
+  kibana:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3
     depends_on:
-      - redis
-      - postgres
       - elasticsearch
     env_file:
       - ./data/global_config/global_config.env
-    volumes:
-    - ./data/global_config/global_config.env:/app/global_config.env
-    restart: always
-    networks:
-      - fire_ops
-
-  front_html:
-    image: nginx:1.27.4
     ports:
-      - 80:80
-      - 443:443
-    volumes:
-        - ./data/front_html/conf.d:/etc/nginx/conf.d
-        - ./data/front_html/nginx.conf:/etc/nginx/nginx.conf
-        - ./data/front_html/log:/var/log/nginx
-        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
-        - ./data/front_html/private.key:/etc/nginx/private.key
+      - 15601:5601
     restart: always
-    networks:
-      - fire_ops
 
-networks:
-  fire_ops:
-    external: true
-    name: ${NETWORK}
