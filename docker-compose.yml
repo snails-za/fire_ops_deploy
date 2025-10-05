@@ -69,3 +69,12 @@ services:
       - 15601:5601
     restart: always
 
+  qdrant:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1-linuxarm64
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./data/qdrant/data:/qdrant/storage
+
+
