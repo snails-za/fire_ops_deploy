@@ -166,3 +166,4 @@ data/elasticsearch/data/*
 data/redis/*
 data/postgres/*
 data/portainer/*
+data/qdrant/*
