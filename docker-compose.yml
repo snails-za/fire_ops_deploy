@@ -1,34 +1,40 @@
 version: "3.7"
 services:
-#  fire_ops:
-#    image: snail97/fire_ops_arm:latest
-#    ports:
-#      - 18000:8000
-#    depends_on:
-#      - redis
-#      - postgres
-#      - elasticsearch
-#    env_file:
-#      - ./data/global_config/global_config.env
-#    volumes:
-#    - ./data/global_config/global_config.env:/app/global_config.env
-#    restart: always
+  fire_ops:
+    image: docker.io/snail97/fire_ops_arm:latest
+    container_name: fire_ops
+    ports:
+      - 18000:8000
+    depends_on:
+      - redis
+      - postgres
+      - elasticsearch
+    env_file:
+      - ./data/global_config/global_config.env
+    volumes:
+    - ./data/global_config/global_config.env:/app/global_config.env
+    - ./data/fire_ops/data:/app/data
+    - ./data/fire_ops/logs:/app/logs
+    - ./data/fire_ops/models:/app/models
+    restart: always
 
-#  front_html:
-#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.27.4-linuxarm64
-#    ports:
-#      - 80:80
-#      - 443:443
-#    volumes:
-#        - ./data/front_html/conf.d:/etc/nginx/conf.d
-#        - ./data/front_html/nginx.conf:/etc/nginx/nginx.conf
-#        - ./data/front_html/log:/var/log/nginx
-#        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
-#        - ./data/front_html/private.key:/etc/nginx/private.key
-#    restart: always
+  front_html:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.27.4-linuxarm64
+    container_name: front_html
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+        - ./data/front_html/conf.d:/etc/nginx/conf.d
+        - ./data/front_html/nginx.conf:/etc/nginx/nginx.conf
+        - ./data/front_html/log:/var/log/nginx
+        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
+        - ./data/front_html/private.key:/etc/nginx/private.key
+    restart: always
 
   redis:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2-linuxarm64
+    container_name: redis
     ports:
       - 16379:6379
     volumes:
@@ -38,6 +44,7 @@ services:
 
   postgres:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/postgres:17-linuxarm64
+    container_name: postgres
     volumes:
       - ./data/postgres/data:/var/lib/postgresql/data
     ports:
@@ -49,6 +56,7 @@ services:
 
   elasticsearch:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3-linuxarm64
+    container_name: elasticsearch
     volumes:
       - ./data/elasticsearch/data:/usr/share/elasticsearch/data
       - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
@@ -61,6 +69,7 @@ services:
 
   kibana:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3-linuxarm64
+    container_name: kibana
     depends_on:
       - elasticsearch
     env_file:
@@ -71,6 +80,7 @@ services:
 
   qdrant:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1-linuxarm64
+    container_name: qdrant
     ports:
       - "6333:6333"
       - "6334:6334"

@@ -167,3 +167,4 @@ data/redis/*
 data/postgres/*
 data/portainer/*
 data/qdrant/*
+data/fire_ops/*
