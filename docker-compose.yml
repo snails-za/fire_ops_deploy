@@ -13,9 +13,10 @@ services:
       - ./data/global_config/global_config.env
     volumes:
     - ./data/global_config/global_config.env:/app/global_config.env
+    - ./data/fire_ops/nltk_data:/app/nltk_data:ro
+    - ./data/fire_ops/models:/app/models:ro
     - ./data/fire_ops/data:/app/data
     - ./data/fire_ops/logs:/app/logs
-    - ./data/fire_ops/models:/app/models
     restart: always
 
   front_html:
