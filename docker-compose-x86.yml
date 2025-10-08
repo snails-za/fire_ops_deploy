@@ -75,43 +75,11 @@ services:
       timeout: 10s
       retries: 3
 
-  elasticsearch:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3
-    volumes:
-      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
-      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
-    env_file:
-      - ./data/global_config/global_config.env
-    ports:
-      - 19200:9200
-      - 19300:9300
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  kibana:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3
-    depends_on:
-      - elasticsearch
-    env_file:
-      - ./data/global_config/global_config.env
-    ports:
-      - 15601:5601
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   qdrant:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1
     ports:
-      - "6333:6333"
-      - "6334:6334"
+      - "16333:6333"
+      - "16334:6334"
     volumes:
       - ./data/qdrant/data:/qdrant/storage
     healthcheck:
@@ -119,5 +87,37 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+#  elasticsearch:
+#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3
+#    volumes:
+#      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+#      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
+#    env_file:
+#      - ./data/global_config/global_config.env
+#    ports:
+#      - 19200:9200
+#      - 19300:9300
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#
+#  kibana:
+#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3
+#    depends_on:
+#      - elasticsearch
+#    env_file:
+#      - ./data/global_config/global_config.env
+#    ports:
+#      - 15601:5601
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
 
 
