@@ -32,21 +32,6 @@ services:
         - ./data/front_html/private.key:/etc/nginx/private.key
     restart: always
 
-  celery_worker:
-    image: snail97/fire_ops:latest
-    command: celery -A celery_tasks.app worker -l info --pool=solo
-    depends_on:
-      - redis
-      - postgres
-      - elasticsearch
-      - qdrant
-    restart: always
-    healthcheck:
-      test: [ "CMD", "celery", "-A", "celery_tasks.app", "inspect", "ping" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   redis:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2
     ports:
