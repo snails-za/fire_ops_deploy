@@ -11,7 +11,10 @@ services:
     env_file:
       - ./data/global_config/global_config.env
     volumes:
-    - ./data/global_config/global_config.env:/app/global_config.env
+      - ./data/global_config/global_config.env:/app/global_config.env
+      - ./data/fire_ops/models:/app/models
+      - ./data/fire_ops/data:/app/data
+      - ./data/fire_ops/logs:/app/logs
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
