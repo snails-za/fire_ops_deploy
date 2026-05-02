@@ -69,6 +69,7 @@ services:
       - "16334:6334"
     volumes:
       - ./data/qdrant/data:/qdrant/storage
+    restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:6333/health" ]
       interval: 30s
