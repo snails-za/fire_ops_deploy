@@ -61,6 +61,7 @@ services:
       - "16334:6334"
     volumes:
       - ./data/qdrant/data:/qdrant/storage
+    restart: always
 
 #  elasticsearch:
 #    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3-linuxarm64
