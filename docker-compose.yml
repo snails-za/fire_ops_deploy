@@ -27,6 +27,7 @@ services:
         - ./data/front_html/cert.pem:/etc/nginx/cert.pem
         - ./data/front_html/private.key:/etc/nginx/private.key
         - ./data/front_html/log:/var/log/nginx
+        - ./data/front_html/packages:/packages
     restart: always
 
   redis:
