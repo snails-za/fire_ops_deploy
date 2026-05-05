@@ -18,7 +18,7 @@ services:
     restart: always
 
   front_html:
-    image: docker.io/snail97/fire_ops_arm:latest
+    image: docker.io/snail97/fire-admin-arm:latest
     container_name: front_html
     ports:
       - 80:80
