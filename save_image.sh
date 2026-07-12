@@ -3,14 +3,7 @@
 IMAGES=""
 
 echo "pull images"
-for img in $(cat database.yml | grep image: | awk '{print $2}' | uniq | sort);
-do
-  echo "pulling image: $img"
-  docker pull $img
-  IMAGES=${img}" "${IMAGES}
-done
-
-for img in $(cat docker-compose.yml | grep image: | awk '{print $2}' | uniq | sort);
+for img in $(grep -E '^[[:space:]]+image:' docker-compose-x86.yml | awk '{print $2}' | uniq | sort);
 do
   echo "pulling image: $img"
   docker pull $img
