@@ -1,39 +1,51 @@
-version: "3.7"
 services:
   fire_ops:
-    image: snail97/fire_ops:latest
+    image: fire_ops:dp
+    build:
+      context: ./src
+      dockerfile: docker/Dockerfile
     container_name: fire_ops
     ports:
-      - 18000:8000
+      # AutoDL 预留：外网 13445 → 内网 8892（原 MinerU，现改挂 fire_ops）
+      - "8892:8000"
     depends_on:
       - redis
       - postgres
-#      - elasticsearch
     env_file:
       - ./data/global_config/global_config.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data/global_config/global_config.env:/app/global_config.env
       - ./data/fire_ops/data:/app/data
+      - ./data/fire_ops/models:/app/models
       - ./data/fire_ops/logs:/app/logs
+      - ./data/fire_ops/app_overlay/apps/utils/dp_client.py:/app/apps/utils/dp_client.py:ro
+      - ./data/fire_ops/app_overlay/apps/utils/document_parser.py:/app/apps/utils/document_parser.py:ro
+      - ./data/fire_ops/app_overlay/apps/utils/llm_optimizers.py:/app/apps/utils/llm_optimizers.py:ro
+      - ./data/fire_ops/app_overlay/config.py:/app/config.py:ro
+      - ./data/fire_ops/app_overlay/apps/models:/app/apps/models:ro
+      - ./data/fire_ops/app_overlay/static/admin.html:/app/static/admin.html:ro
     restart: always
 
-  front_html:
-    image: docker.io/snail97/fire-admin:latest
-    container_name: front_html
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./data/front_html/cert.pem:/etc/nginx/cert.pem
-      - ./data/front_html/private.key:/etc/nginx/private.key
-      - ./data/front_html/log:/var/log/nginx
-    restart: always
+  # front_html:
+  #   image: docker.io/snail97/fire-admin:latest
+  #   container_name: front_html
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./data/front_html/cert.pem:/etc/nginx/cert.pem
+  #     - ./data/front_html/private.key:/etc/nginx/private.key
+  #     - ./data/front_html/log:/var/log/nginx
+  #   restart: always
 
   redis:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2
     container_name: redis
-    ports:
-      - 16379:6379
+    # 仅内部使用，不对外暴露
+    # ports:
+    #   - "16379:6379"
     volumes:
       - ./data/redis/data:/data
     restart: always
@@ -43,8 +55,9 @@ services:
     container_name: postgres
     volumes:
       - ./data/postgres/data:/var/lib/postgresql/data
-    ports:
-      - "15432:5432"
+    # 仅内部使用，不对外暴露
+    # ports:
+    #   - "15432:5432"
     env_file:
       - ./data/global_config/global_config.env
     restart: always
@@ -52,35 +65,10 @@ services:
   qdrant:
     image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1
     container_name: qdrant
-    ports:
-      - "16333:6333"
-      - "16334:6334"
+    # 仅内部使用，不对外暴露
+    # ports:
+    #   - "16333:6333"
+    #   - "16334:6334"
     volumes:
       - ./data/qdrant/data:/qdrant/storage
     restart: always
-
-#  elasticsearch:
-#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3
-#     container_name: elasticsearch
-#    volumes:
-#      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
-#      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
-#    env_file:
-#      - ./data/global_config/global_config.env
-#    ports:
-#      - 19200:9200
-#      - 19300:9300
-#    restart: always
-#
-#  kibana:
-#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3
-#    container_name: kibana
-#    depends_on:
-#      - elasticsearch
-#    env_file:
-#      - ./data/global_config/global_config.env
-#    ports:
-#      - 15601:5601
-#    restart: always
-
-

@@ -11,10 +11,15 @@ services:
 #      - elasticsearch
     env_file:
       - ./data/global_config/global_config.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
     - ./data/global_config/global_config.env:/app/global_config.env
     - ./data/fire_ops/data:/app/data
     - ./data/fire_ops/logs:/app/logs
+    - ./data/fire_ops/app_overlay/apps/utils/dp_client.py:/app/apps/utils/dp_client.py:ro
+    - ./data/fire_ops/app_overlay/apps/utils/document_parser.py:/app/apps/utils/document_parser.py:ro
+    - ./data/fire_ops/app_overlay/config.py:/app/config.py:ro
     restart: always
 
   front_html:
