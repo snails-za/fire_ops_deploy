@@ -168,3 +168,5 @@ data/postgres/*
 data/portainer/*
 data/qdrant/*
 data/fire_ops/*
+data/front_html/html/
+data/front_html/log/

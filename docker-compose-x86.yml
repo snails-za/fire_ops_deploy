@@ -5,9 +5,9 @@ services:
       context: ./src
       dockerfile: docker/Dockerfile
     container_name: fire_ops
-    ports:
-      # AutoDL 预留：外网 13445 → 内网 8892
-      - "8892:8000"
+    # 不直接暴露宿主机端口；统一由 front_html:8892 反代
+    expose:
+      - "8000"
     depends_on:
       - redis
       - postgres
@@ -20,6 +20,18 @@ services:
       - ./data/fire_ops/data:/app/data
       - ./data/fire_ops/models:/app/models
       - ./data/fire_ops/logs:/app/logs
+    restart: always
+
+  # 镜像在 fire-admin 仓库构建：docker/build.sh → fire-admin:latest
+  front_html:
+    image: fire-admin:latest
+    container_name: front_html
+    ports:
+      - "8892:80"
+    depends_on:
+      - fire_ops
+    volumes:
+      - ./data/front_html/log:/var/log/nginx
     restart: always
 
   redis:

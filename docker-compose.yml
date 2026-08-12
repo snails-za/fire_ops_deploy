@@ -17,22 +17,22 @@ services:
     - ./data/global_config/global_config.env:/app/global_config.env
     - ./data/fire_ops/data:/app/data
     - ./data/fire_ops/logs:/app/logs
-    - ./data/fire_ops/app_overlay/apps/utils/dp_client.py:/app/apps/utils/dp_client.py:ro
-    - ./data/fire_ops/app_overlay/apps/utils/document_parser.py:/app/apps/utils/document_parser.py:ro
-    - ./data/fire_ops/app_overlay/config.py:/app/config.py:ro
     restart: always
 
+  # 镜像在 fire-admin 仓库构建：docker/build-arm.sh → fire-admin:latest
   front_html:
-    image: docker.io/snail97/fire-admin-arm:latest
+    image: fire-admin:latest
     container_name: front_html
     ports:
       - 80:80
       - 443:443
+    depends_on:
+      - fire_ops
     volumes:
-        - ./data/front_html/cert.pem:/etc/nginx/cert.pem
-        - ./data/front_html/private.key:/etc/nginx/private.key
-        - ./data/front_html/log:/var/log/nginx
-        - ./data/front_html/packages:/packages
+      - ./data/front_html/log:/var/log/nginx
+      - ./data/front_html/cert.pem:/etc/nginx/cert.pem:ro
+      - ./data/front_html/private.key:/etc/nginx/private.key:ro
+      - ./data/front_html/packages:/packages:ro
     restart: always
 
   redis:
