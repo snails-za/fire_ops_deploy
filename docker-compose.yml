@@ -1,95 +1,59 @@
 version: "3.7"
 services:
   fire_ops:
-    image: docker.io/snail97/fire_ops_arm:latest
+    image: fire_ops:dp
     container_name: fire_ops
-    ports:
-      - 18000:8000
+    # 不直接暴露宿主机端口；统一由 front_html:8892 反代
+    expose:
+      - "8000"
     depends_on:
       - redis
       - postgres
-#      - elasticsearch
     env_file:
       - ./data/global_config/global_config.env
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-    - ./data/global_config/global_config.env:/app/global_config.env
-    - ./data/fire_ops/data:/app/data
-    - ./data/fire_ops/logs:/app/logs
+      - ./data/global_config/global_config.env:/app/global_config.env
+      - ./data/fire_ops/data:/app/data
+      - ./data/fire_ops/models:/app/models
+      - ./data/fire_ops/logs:/app/logs
     restart: always
 
-  # 镜像在 fire-admin 仓库构建：docker/build-arm.sh → fire-admin:latest
+  # 镜像在 fire-admin 仓库构建：docker/build.sh → fire-admin:latest
   front_html:
     image: fire-admin:latest
     container_name: front_html
     ports:
-      - 80:80
-      - 443:443
+      - "8892:80"
     depends_on:
       - fire_ops
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data/front_html/log:/var/log/nginx
-      - ./data/front_html/cert.pem:/etc/nginx/cert.pem:ro
-      - ./data/front_html/private.key:/etc/nginx/private.key:ro
-      - ./data/front_html/packages:/packages:ro
+      - ./data/front_html/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     restart: always
 
   redis:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2-linuxarm64
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/redis:7.4.2
     container_name: redis
-    ports:
-      - 16379:6379
     volumes:
       - ./data/redis/data:/data
-    user: "501:501"  # Elasticsearch 容器中的默认用户 UID 是 1000
     restart: always
 
   postgres:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/postgres:17-linuxarm64
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/postgres:17
     container_name: postgres
     volumes:
       - ./data/postgres/data:/var/lib/postgresql/data
-    ports:
-      - "15432:5432"
     env_file:
       - ./data/global_config/global_config.env
-    user: "501:501"  # PostgreSQL 容器中的默认用户 UID 是 999
     restart: always
 
   qdrant:
-    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1-linuxarm64
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/qdrant/qdrant:v1.14.1
     container_name: qdrant
-    ports:
-      - "16333:6333"
-      - "16334:6334"
     volumes:
       - ./data/qdrant/data:/qdrant/storage
     restart: always
-
-#  elasticsearch:
-#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/elasticsearch:8.17.3-linuxarm64
-#    container_name: elasticsearch
-#    volumes:
-#      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
-#      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins
-#    env_file:
-#      - ./data/global_config/global_config.env
-#    ports:
-#      - 19200:9200
-#      - 19300:9300
-#    restart: always
-#
-#  kibana:
-#    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/kibana:8.17.3-linuxarm64
-#    container_name: kibana
-#    depends_on:
-#      - elasticsearch
-#    env_file:
-#      - ./data/global_config/global_config.env
-#    ports:
-#      - 15601:5601
-#    restart: always
-
-
-

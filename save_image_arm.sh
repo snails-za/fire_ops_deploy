@@ -3,7 +3,7 @@
 IMAGES=""
 
 echo "pull images"
-for img in $(grep -E '^[[:space:]]+image:' docker-compose.yml | awk '{print $2}' | uniq | sort);
+for img in $(docker compose -f docker-compose.yml -f docker-compose-arm.yml config --images 2>/dev/null | sort -u);
 do
   echo "pulling image: $img"
   docker pull $img
